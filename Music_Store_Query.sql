@@ -28,7 +28,7 @@ Write a query that returns one city that has the highest sum of invoice totals.
 Return both the city name & sum of all invoice totals */
 
 SELECT billing_city,SUM(total) AS InvoiceTotal
-FROM invoice
+FROM invoice 
 GROUP BY billing_city
 ORDER BY InvoiceTotal DESC
 LIMIT 1;
@@ -37,10 +37,10 @@ LIMIT 1;
 /* Q5: Who is the best customer? The customer who has spent the most money will be declared the best customer. 
 Write a query that returns the person who has spent the most money.*/
 
-SELECT customer.customer_id, first_name, last_name, SUM(total) AS total_spending
-FROM customer
-JOIN invoice ON customer.customer_id = invoice.customer_id
-GROUP BY customer.customer_id
+SELECT c.customer_id, c.first_name, c.last_name, SUM(i.total) AS total_spending
+FROM customer c
+JOIN invoice i ON c.customer_id = i.customer_id
+GROUP BY c.customer_id
 ORDER BY total_spending DESC
 LIMIT 1;
 
@@ -54,14 +54,15 @@ Return your list ordered alphabetically by email starting with A. */
 
 /*Method 1 */
 
-SELECT DISTINCT email,first_name, last_name
-FROM customer
-JOIN invoice ON customer.customer_id = invoice.customer_id
-JOIN invoiceline ON invoice.invoice_id = invoiceline.invoice_id
-WHERE track_id IN(
-	SELECT track_id FROM track
-	JOIN genre ON track.genre_id = genre.genre_id
-	WHERE genre.name LIKE 'Rock'
+SELECT DISTINCT c.email, c.first_name, c.last_name
+FROM customer c
+JOIN invoice i ON c.customer_id = i.customer_id
+JOIN invoiceline il ON i.invoice_id = il.invoice_id
+WHERE il.track_id IN(
+	SELECT t.track_id 
+	FROM track t
+	JOIN genre g ON t.genre_id = g.genre_id
+	WHERE g.name LIKE 'Rock'
 )
 ORDER BY email;
 
